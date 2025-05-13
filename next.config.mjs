@@ -1,13 +1,13 @@
-// next.config.mjs
-import { defineConfig } from 'next';
-
-export default defineConfig({
-  typescript: {
-    // Ignore TypeScript errors
-    ignoreBuildErrors: true,
-  },
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   eslint: {
-    // Ignore ESLint errors during production build
+    // Disable ESLint during the build step
     ignoreDuringBuilds: true,
   },
-});
+  typescript: {
+    // Disable TypeScript type checking during the build step
+    ignoreBuildErrors: true,
+  },
+};
+
+export default nextConfig;
