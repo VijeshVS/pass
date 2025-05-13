@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '../actions/auth';
+import { toast } from 'sonner';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
@@ -13,25 +14,43 @@ function LoginPage() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-
+    
     if (!username || !password) {
       setError('Both fields are required.');
       return;
     }
 
+    // Show loading toast
+    toast.loading('Logging in...', {
+      id: 'login-loading',
+    });
+
     try {
       const response = await login(username, password);
+
       if (response.status === 200) {
         localStorage.setItem('token', response.token);
+        toast.success('Login successful!', {
+          id: 'login-success',
+        });
         router.push('/scan');
       } else if (response.status === 401) {
         setError('Not authenticated. Please check your credentials.');
+        toast.error('Invalid credentials, please try again.', {
+          id: 'login-error',
+        });
       } else {
         setError('An unexpected error occurred.');
+        toast.error('Something went wrong, please try again later.', {
+          id: 'unexpected-error',
+        });
       }
     } catch (err) {
       console.error(err);
       setError('Failed to login. Please try again later.');
+      toast.error('Failed to login. Please try again later.', {
+        id: 'login-error',
+      });
     }
   };
 
