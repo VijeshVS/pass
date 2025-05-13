@@ -20,13 +20,16 @@ function LoginPage() {
       return;
     }
 
-    // Show loading toast
-    toast.loading('Logging in...', {
+    // Show loading toast and store the toast ID
+    const loadingToastId = toast.loading('Logging in...', {
       id: 'login-loading',
     });
 
     try {
       const response = await login(username, password);
+
+      // Dismiss loading toast after login attempt
+      toast.dismiss(loadingToastId);
 
       if (response.status === 200) {
         localStorage.setItem('token', response.token);
