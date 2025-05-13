@@ -53,6 +53,7 @@ export async function register(username:string,password:string,role:string){
         })  
     }
     catch(e){
+        console.log(e)
         return 500
     }
     
