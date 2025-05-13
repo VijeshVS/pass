@@ -15,41 +15,41 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-8 transition duration-300">
-        <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Create Account</h2>
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="bg-[#2b2b2b] rounded-xl shadow-lg w-full max-w-md p-8 transition duration-300">
+        <h2 className="text-3xl font-semibold text-center text-[#f9dd9c] mb-6">Create Account</h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <label className="block text-sm font-medium text-[#f9dd9c] mb-1">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              className="w-full px-4 py-2 border border-[#f9dd9c] rounded-md shadow-sm bg-[#333333] text-[#f9dd9c] focus:ring-2 focus:ring-[#f9dd9c] focus:outline-none"
               placeholder="Enter your username"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-[#f9dd9c] mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              className="w-full px-4 py-2 border border-[#f9dd9c] rounded-md shadow-sm bg-[#333333] text-[#f9dd9c] focus:ring-2 focus:ring-[#f9dd9c] focus:outline-none"
               placeholder="Enter a secure password"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <label className="block text-sm font-medium text-[#f9dd9c] mb-1">Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              className="w-full px-4 py-2 border border-[#f9dd9c] rounded-md shadow-sm bg-[#333333] text-[#f9dd9c] focus:ring-2 focus:ring-[#f9dd9c] focus:outline-none"
               required
             >
               <option value="" disabled>Select a role</option>
@@ -62,7 +62,7 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
+            className="w-full py-2 px-4 bg-[#f9dd9c] text-black font-semibold rounded-md hover:bg-[#f9e28b] transition"
           >
             Register
           </button>
