@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { changeStatus, getPassDetails } from "../actions/details";
@@ -23,15 +23,21 @@ export default function DetailsPage({ searchParams }: PageProps) {
   const router = useRouter();
 
   function entryStatus(index: number) {
+    const toastId = toast.loading("Marking participant as entered...");
+
     changeStatus(pass._id, localStorage.getItem("token") || "", index).then(
       (data) => {
         if (data.status == 200) {
-          toast.success("Marked participant as entered successfully!");
+          toast.success("Marked participant as entered successfully!", {
+            id: toastId,
+          });
           setTimeout(() => {
             window.location.reload();
           }, 1000);
         } else {
-          toast.error("Failed to mark entry. Please try again.");
+          toast.error("Failed to mark entry. Please try again.", {
+            id: toastId,
+          });
         }
       }
     );

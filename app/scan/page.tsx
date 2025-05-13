@@ -65,7 +65,7 @@ export default function Scan() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
-      <h1 className="text-2xl font-bold mb-6 text-[#f9dd9c]">Event Pass Scanner</h1>
+      <h1 className="text-2xl font-bold mb-3 text-[#f9dd9c]">Pass Scanner</h1>
 
       <div
         id="qr-scanner"
