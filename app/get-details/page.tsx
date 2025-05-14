@@ -27,7 +27,7 @@ export default function DetailsPage({ searchParams }: PageProps) {
 
     changeStatus(pass._id, localStorage.getItem("token") || "", index).then(
       (data) => {
-        if (data.status == 200) {
+        if (data.status === 200) {
           toast.success("Marked participant as entered successfully!", {
             id: toastId,
           });
@@ -47,7 +47,7 @@ export default function DetailsPage({ searchParams }: PageProps) {
     if (id) {
       getPassDetails(id, localStorage.getItem("token") as string).then(
         (data) => {
-          if (data.status == 200) {
+          if (data.status === 200) {
             setPass(data.pass);
           } else {
             setPass("error");
@@ -118,9 +118,6 @@ export default function DetailsPage({ searchParams }: PageProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <strong>Pass ID:</strong> {pass.passId}
-          </div>
-          <div className="flex items-center gap-2">
             <strong>Order ID:</strong> {pass.orderId}
           </div>
           <div className="flex items-center gap-2">
@@ -135,8 +132,12 @@ export default function DetailsPage({ searchParams }: PageProps) {
           <div className="flex items-center gap-2">
             <MdCalendarToday className="text-[#f9dd9c]" />{" "}
             <span>
-              <strong>Date:</strong> {new Date(pass.createdAt).toLocaleString()}
+              <strong>Created At:</strong>{" "}
+              {new Date(pass.createdAt).toLocaleString()}
             </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <strong>Class ID:</strong> {pass.classId || "N/A"}
           </div>
         </div>
 
@@ -146,8 +147,8 @@ export default function DetailsPage({ searchParams }: PageProps) {
           👥 Participants
         </h2>
         <div className="flex flex-col gap-4">
-          {pass.participantsName.map((name: string, index: number) => {
-            const isEntered = pass.participantsStatus[index];
+          {pass.participantsData.map((participant: any, index: number) => {
+            const isEntered = participant.arrived;
             return (
               <div
                 key={index}
@@ -155,12 +156,10 @@ export default function DetailsPage({ searchParams }: PageProps) {
               >
                 <div className="flex items-center gap-3 font-medium text-[#f9dd9c]">
                   <FaUserAlt />
-                  {name}
+                  {participant.name}
                 </div>
                 <button
-                  onClick={() => {
-                    entryStatus(index);
-                  }}
+                  onClick={() => entryStatus(index)}
                   className={`px-5 py-2 rounded-lg text-black font-semibold transition duration-200 ease-in-out ${
                     isEntered
                       ? "bg-green-500 cursor-not-allowed"
