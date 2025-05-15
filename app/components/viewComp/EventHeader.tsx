@@ -28,8 +28,8 @@ const EventHeader: React.FC<EventHeaderProps> = ({ event }) => {
               px-3 py-1 text-sm font-medium rounded-full
               ${event.category === 'Cultural' ? 'bg-purple-600' : 
                 event.category === 'Technical' ? 'bg-blue-600' : 
-                event.category === 'Sports' ? 'bg-green-600' : 
-                event.category === 'Workshop' ? 'bg-yellow-600' : 'bg-gray-600'}
+                event.category === 'Innovative' ? 'bg-green-600' : 
+                event.category === 'Gaming' ? 'bg-yellow-600' : 'bg-gray-600'}
             `}>
               {event.category}
             </span>

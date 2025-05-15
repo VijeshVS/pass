@@ -112,6 +112,8 @@ export async function createOneEvent(formData: any, token: string) {
     return { status: 401, error: "Unauthorized" };
   }
 
+  console.log(formData)
+
   try {
     const {
       _id,
@@ -157,6 +159,7 @@ export async function createOneEvent(formData: any, token: string) {
 
     return { status: 200 };
   } catch (error: any) {
+    console.log(error)
     console.error("Error creating event:", error);
     return {
       status: 500,
