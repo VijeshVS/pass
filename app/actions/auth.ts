@@ -23,8 +23,6 @@ export async function login(username: string, password: string) {
     password,
   });
 
-  console.log(user);
-
   if (!user) {
     return {
       status: 401,

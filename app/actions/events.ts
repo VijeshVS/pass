@@ -1,25 +1,39 @@
 "use server";
 import { connectDB } from "../db/db";
-import { EventModel, Registration } from "../db/models";
+import { EventModel, Registration, User } from "../db/models";
 import { checkIfAuthenticated } from "./auth";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function checkIfAdmin(token: string) {
   const data = jwt.decode(token) as JwtPayload;
+  const user = data.username;
 
-  if (!data) return false;
+  const ur = await User.findOne({
+    username: user,
+  });
 
-  if (data.role == "admin" || data.role == "super-admin") return true;
+  if(!ur) return false;
+  
+  if(ur.role == 'admin' || ur.role == 'super-admin'){
+    return true;
+  }
 
   return false;
 }
 
 export async function checkIfSuperAdmin(token: string) {
   const data = jwt.decode(token) as JwtPayload;
+  const user = data.username;
 
-  if (!data) return false;
+  const ur = await User.findOne({
+    username: user,
+  });
 
-  if (data.role == "super-admin") return true;
+  if(!ur) return false;
+  
+  if(ur.role == 'super-admin'){
+    return true;
+  }
 
   return false;
 }
