@@ -175,7 +175,6 @@ export async function updateOneEvent(formData: any, token: string) {
       return { status: 400, error: "_id (Event ID) is required" };
     }
 
-    // Update event by _id with new data
     const updated = await EventModel.findByIdAndUpdate(
       _id,
       {
@@ -228,6 +227,7 @@ export async function getEventPasses(token: string, event_id: string) {
 
       return {
         ...rest,
+        // @ts-ignore
         _id: _id.toString(),
         createdAt: createdAt?.toISOString?.(),
         updatedAt: updatedAt?.toISOString?.(),
@@ -236,6 +236,7 @@ export async function getEventPasses(token: string, event_id: string) {
 
     let totalParticipants = 0;
     passes.forEach((pass) => {
+      // @ts-ignore
       totalParticipants += pass.noOfParticipants || 0;
     });
 
