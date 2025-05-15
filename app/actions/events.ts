@@ -1,6 +1,6 @@
 "use server";
 import { connectDB } from "../db/db";
-import { EventModel } from "../db/models";
+import { EventModel, Registration } from "../db/models";
 import { checkIfAuthenticated } from "./auth";
 
 export async function checkIfAdmin(token: string) {}
@@ -209,3 +209,48 @@ export async function updateOneEvent(formData: any, token: string) {
     return { status: 500, error: "Internal Server Error" };
   }
 }
+
+export async function getEventPasses(token: string, event_id: string) {
+  await connectDB();
+
+  const isAuthenticated = await checkIfAuthenticated(token);
+  if (!isAuthenticated) {
+    return { status: 401, error: "Unauthorized" };
+  }
+
+  try {
+    const rawPasses = await Registration.find({
+      classId: event_id,
+    }).lean();
+
+    const passes = rawPasses.map(pass => {
+      const { _id, createdAt, updatedAt, ...rest } = pass;
+
+      return {
+        ...rest,
+        _id: _id.toString(),
+        createdAt: createdAt?.toISOString?.(),
+        updatedAt: updatedAt?.toISOString?.(),
+      };
+    });
+
+    let totalParticipants = 0;
+    passes.forEach((pass) => {
+      totalParticipants += pass.noOfParticipants || 0;
+    });
+
+    return {
+      success: true,
+      totalParticipants,
+      passes,
+    };
+  } catch (error) {
+    console.error("Error fetching event passes:", error);
+    return {
+      success: false,
+      message: "Internal server error",
+    };
+  }
+}
+
+

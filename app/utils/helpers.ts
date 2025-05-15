@@ -4,6 +4,11 @@ export const getEventIdFromUrl = (): string | null => {
   return urlParams.get('event_id');
 };
 
+export const getPassIdFromUrl = (): string | null => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('pass_id');
+};
+
 // Format date for input fields (YYYY-MM-DD)
 export const formatDateForInput = (dateString?: string): string => {
   if (!dateString) return '';
