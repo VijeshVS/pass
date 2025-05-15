@@ -1,6 +1,10 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { checkIfAuthenticated } from '../actions/auth';
+import { toast } from 'sonner';
+import Loading from '../components/Loading';
 
 export default function AdminRedirectPage() {
   const router = useRouter();
