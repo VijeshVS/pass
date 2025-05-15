@@ -28,6 +28,12 @@ export default function Home() {
           >
             📷 Scan QR
           </button>
+          <button
+            onClick={() => router.push('/admin')}
+            className="px-6 py-3 border border-[#f9dd9c] text-[#f9dd9c] font-semibold rounded-md hover:bg-[#f9dd9c] hover:text-black transition duration-200"
+          >
+            🧔🏻‍♂️ Admin
+          </button>
         </div>
       </div>
     </div>
