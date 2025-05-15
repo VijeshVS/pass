@@ -1,27 +1,53 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { getAllEvents } from '@/app/actions/events';
-import Loading from '@/app/components/Loading';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { deleteEventById, getAllEvents } from "@/app/actions/events";
+import Loading from "@/app/components/Loading";
+import { toast } from "sonner";
 
 const Page = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const handleDelete = async (id: string) => {
+    const token = localStorage.getItem("token") || "";
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this event?"
+    );
+    if (!confirmDelete) return;
+
+    toast.promise(
+      (async () => {
+        const result = await deleteEventById(id, token);
+        if (result.status === 200) {
+          setEvents(events.filter((event) => event._id !== id));
+        } else {
+          throw new Error(result.error || "Failed to delete event");
+        }
+      })(),
+      {
+        loading: "Deleting event...",
+        success: "Event deleted successfully!",
+        error: (err) => err.message || "An error occurred while deleting",
+      }
+    );
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
-      const token = localStorage.getItem('token') || '';
+      const token = localStorage.getItem("token") || "";
       try {
         const result = await getAllEvents(token);
         if (result.status === 200) {
+          // @ts-ignore
           setEvents(result.events);
         } else {
           setError(true);
         }
       } catch (err) {
-        console.error('Error fetching events:', err);
+        console.error("Error fetching events:", err);
         setError(true);
       } finally {
         setLoading(false);
@@ -68,14 +94,22 @@ const Page = () => {
                 {event.name}
               </h2>
               <p className="text-sm text-[#f9dd9c]/70 mb-4 line-clamp-3">
-                {event.description?.substring(0, 120) || 'No description'}
+                {event.description?.substring(0, 120) || "No description"}
               </p>
 
               <div className="text-sm space-y-1 mb-3">
-                <p><strong>Category:</strong> {event.category || 'N/A'}</p>
-                <p><strong>Date:</strong> {event.date || 'N/A'}</p>
-                <p><strong>Time:</strong> {event.time || 'N/A'}</p>
-                <p><strong>Venue:</strong> {event.venue || 'N/A'}</p>
+                <p>
+                  <strong>Category:</strong> {event.category || "N/A"}
+                </p>
+                <p>
+                  <strong>Date:</strong> {event.date || "N/A"}
+                </p>
+                <p>
+                  <strong>Time:</strong> {event.time || "N/A"}
+                </p>
+                <p>
+                  <strong>Venue:</strong> {event.venue || "N/A"}
+                </p>
               </div>
 
               {event.contact?.length > 0 && (
@@ -102,6 +136,12 @@ const Page = () => {
                     Edit
                   </button>
                 </Link>
+                <button
+                  onClick={() => handleDelete(event._id)}
+                  className="bg-red-600 text-white px-4 py-1 rounded-full text-sm font-semibold hover:bg-red-700 transition"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}

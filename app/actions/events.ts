@@ -2,14 +2,24 @@
 import { connectDB } from "../db/db";
 import { EventModel, Registration } from "../db/models";
 import { checkIfAuthenticated } from "./auth";
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export async function checkIfAdmin(token: string) {
-  const data = jwt.decode(token) as JwtPayload
-  
-  if(!data) return false
+  const data = jwt.decode(token) as JwtPayload;
 
-  if(data.role == 'admin') return true;
+  if (!data) return false;
+
+  if (data.role == "admin") return true;
+
+  return false;
+}
+
+export async function checkIfSuperAdmin(token: string) {
+  const data = jwt.decode(token) as JwtPayload;
+
+  if (!data) return false;
+
+  if (data.role == "super-admin") return true;
 
   return false;
 }
@@ -17,7 +27,7 @@ export async function checkIfAdmin(token: string) {
 export async function getAllEvents(token: string) {
   await connectDB();
   const check = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token)
+  const adminCheck = await checkIfAdmin(token);
 
   if (!check || !adminCheck) {
     return {
@@ -46,7 +56,7 @@ export async function getAllEvents(token: string) {
 export async function getEventById(eventId: string, token: string) {
   await connectDB();
   const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token)
+  const adminCheck = await checkIfAdmin(token);
 
   if (!isAuthenticated || !adminCheck) {
     return {
@@ -96,7 +106,7 @@ export async function createOneEvent(formData: any, token: string) {
   await connectDB();
 
   const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token)
+  const adminCheck = await checkIfAdmin(token);
 
   if (!isAuthenticated || !adminCheck) {
     return { status: 401, error: "Unauthorized" };
@@ -159,7 +169,7 @@ export async function updateOneEvent(formData: any, token: string) {
   await connectDB();
 
   const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token)
+  const adminCheck = await checkIfAdmin(token);
 
   if (!isAuthenticated || !adminCheck) {
     return { status: 401, error: "Unauthorized" };
@@ -228,7 +238,7 @@ export async function getEventPasses(token: string, event_id: string) {
   await connectDB();
 
   const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token)
+  const adminCheck = await checkIfAdmin(token);
 
   if (!isAuthenticated || !adminCheck) {
     return { status: 401, error: "Unauthorized" };
@@ -239,7 +249,7 @@ export async function getEventPasses(token: string, event_id: string) {
       classId: event_id,
     }).lean();
 
-    const passes = rawPasses.map(pass => {
+    const passes = rawPasses.map((pass) => {
       const { _id, createdAt, updatedAt, ...rest } = pass;
 
       return {
@@ -271,4 +281,37 @@ export async function getEventPasses(token: string, event_id: string) {
   }
 }
 
+export async function deleteEventById(eventId: string, token: string) {
+  await connectDB();
+  const isAuthenticated = await checkIfAuthenticated(token);
+  const isSuperAdmin = await checkIfSuperAdmin(token);
 
+  if (!isAuthenticated || !isSuperAdmin) {
+    return {
+      status: 401,
+      error: "Unauthorized",
+    };
+  }
+
+  try {
+    const deletedEvent = await EventModel.findByIdAndDelete(eventId);
+
+    if (!deletedEvent) {
+      return {
+        status: 404,
+        error: "Event not found",
+      };
+    }
+
+    return {
+      status: 200,
+      message: "Event deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    return {
+      status: 500,
+      error: "Internal server error",
+    };
+  }
+}

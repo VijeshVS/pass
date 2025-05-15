@@ -53,10 +53,9 @@ const RegisterPage = () => {
               required
             >
               <option value="" disabled>Select a role</option>
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-              <option value="doctor">Doctor</option>
-              <option value="patient">Patient</option>
+              <option value="admin">admin</option>
+              <option value="user">super-admin</option>
+              <option value="doctor">moderator</option>
             </select>
           </div>
 
