@@ -168,9 +168,8 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave }) => {
               <option value="">Select a category</option>
               <option value="Cultural">Cultural</option>
               <option value="Technical">Technical</option>
-              <option value="Sports">Sports</option>
-              <option value="Workshop">Workshop</option>
-              <option value="Other">Other</option>
+              <option value="Sports">Innovative</option>
+              <option value="Workshop">Gaming</option>
             </select>
           </div>
           

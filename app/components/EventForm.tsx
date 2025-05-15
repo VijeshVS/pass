@@ -81,9 +81,8 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
   const categoryOptions = [
     { value: 'Cultural', label: 'Cultural' },
     { value: 'Technical', label: 'Technical' },
-    { value: 'Sports', label: 'Sports' },
-    { value: 'Workshop', label: 'Workshop' },
-    { value: 'Other', label: 'Other' },
+    { value: 'Innovative', label: 'Innovative' },
+    { value: 'Gaming', label: 'Gaming' },
   ];
 
   const feeTypeOptions = [
