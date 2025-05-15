@@ -3,7 +3,7 @@ export type ContactInfo = {
   phone: string;
 };
 
-export type EventCategory = 'Cultural' | 'Technical' | 'Sports' | 'Workshop' | 'Other';
+export type EventCategory = 'Cultural' | 'Technical' | 'Innovative' | 'Gaming';
 export type FeeType = 'individuals' | 'team';
 
 export interface EventFormData {

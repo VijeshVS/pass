@@ -17,7 +17,7 @@ export interface Event {
   date?: string;
   time?: string;
   venue?: string;
-  category?: "Cultural" | "Technical" | "Sports" | "Workshop" | "Other";
+  category?: "Cultural" | "Technical" | "Innovative" | "Gaming";
   prizes?: string[];
   teamsize?: string;
   registrationFee: number;
