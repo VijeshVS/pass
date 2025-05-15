@@ -9,9 +9,9 @@ const RegisterPage = () => {
   const [status, setStatus] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const result = await register(username, password, role);
-    setStatus(result);
+    // e.preventDefault();
+    // const result = await register(username, password, role);
+    // setStatus(result);
   };
 
   return (
