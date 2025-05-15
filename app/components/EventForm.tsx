@@ -149,7 +149,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
             <Input
               label="Event Date"
               name="date"
-              type="date"
+              // type="string"
               value={formData.date}
               onChange={handleInputChange}
               required
