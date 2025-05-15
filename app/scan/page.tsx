@@ -37,7 +37,9 @@ export default function Scan() {
         { fps: 10, qrbox: 250 },
         (decodedText) => {
           stopScanning();
-          router.push(`/get-details?pass_id=${encodeURIComponent(decodedText)}`);
+          const url = new URL(decodedText);
+          const paymentId = url.searchParams.get("payment_id") as string;
+          router.push(`/get-details?pass_id=${encodeURIComponent(paymentId)}`);
         },
         (errorMessage) => {
           console.warn('QR scan error:', errorMessage);
