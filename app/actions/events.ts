@@ -9,7 +9,7 @@ export async function checkIfAdmin(token: string) {
 
   if (!data) return false;
 
-  if (data.role == "admin") return true;
+  if (data.role == "admin" || data.role == "super-admin") return true;
 
   return false;
 }
