@@ -165,6 +165,7 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave }) => {
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
+              
               <option value="">Select a category</option>
               <option value="Cultural">Cultural</option>
               <option value="Technical">Technical</option>
