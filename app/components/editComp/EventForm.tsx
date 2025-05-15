@@ -201,8 +201,8 @@ const EventForm: React.FC<EventFormProps> = ({ event, onSave }) => {
             <input
               id="date"
               name="date"
-              // type="date"
-              value={formatDateForInput(formData.date)}
+              type="text"
+              value={formData.date}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
