@@ -35,6 +35,7 @@ export async function login(username: string, password: string) {
   const token = jwt.sign(
     {
       username,
+      role: user.role
     },
     secretKey
   );

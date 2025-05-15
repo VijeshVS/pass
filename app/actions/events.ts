@@ -2,14 +2,24 @@
 import { connectDB } from "../db/db";
 import { EventModel, Registration } from "../db/models";
 import { checkIfAuthenticated } from "./auth";
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
-export async function checkIfAdmin(token: string) {}
+export async function checkIfAdmin(token: string) {
+  const data = jwt.decode(token) as JwtPayload
+  
+  if(!data) return false
+
+  if(data.role == 'admin') return true;
+
+  return false;
+}
 
 export async function getAllEvents(token: string) {
   await connectDB();
   const check = await checkIfAuthenticated(token);
+  const adminCheck = await checkIfAdmin(token)
 
-  if (!check) {
+  if (!check || !adminCheck) {
     return {
       status: 401,
     };
@@ -36,8 +46,9 @@ export async function getAllEvents(token: string) {
 export async function getEventById(eventId: string, token: string) {
   await connectDB();
   const isAuthenticated = await checkIfAuthenticated(token);
+  const adminCheck = await checkIfAdmin(token)
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !adminCheck) {
     return {
       status: 401,
       error: "Unauthorized",
@@ -85,7 +96,9 @@ export async function createOneEvent(formData: any, token: string) {
   await connectDB();
 
   const isAuthenticated = await checkIfAuthenticated(token);
-  if (!isAuthenticated) {
+  const adminCheck = await checkIfAdmin(token)
+
+  if (!isAuthenticated || !adminCheck) {
     return { status: 401, error: "Unauthorized" };
   }
 
@@ -146,7 +159,9 @@ export async function updateOneEvent(formData: any, token: string) {
   await connectDB();
 
   const isAuthenticated = await checkIfAuthenticated(token);
-  if (!isAuthenticated) {
+  const adminCheck = await checkIfAdmin(token)
+
+  if (!isAuthenticated || !adminCheck) {
     return { status: 401, error: "Unauthorized" };
   }
 
@@ -213,7 +228,9 @@ export async function getEventPasses(token: string, event_id: string) {
   await connectDB();
 
   const isAuthenticated = await checkIfAuthenticated(token);
-  if (!isAuthenticated) {
+  const adminCheck = await checkIfAdmin(token)
+
+  if (!isAuthenticated || !adminCheck) {
     return { status: 401, error: "Unauthorized" };
   }
 
