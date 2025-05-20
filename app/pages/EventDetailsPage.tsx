@@ -155,11 +155,13 @@ const EventDetailsPage: React.FC = () => {
                 feetype={event.feetype}
               />
             )}
-            <button onClick={DownloadAsExcel}
+
+            {/* @ts-ignore */}
+            {passes?.passes.length > 0 ? <button onClick={DownloadAsExcel}
               className="w-full px-2 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-md hover:from-blue-700 hover:to-indigo-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               Download as Excel
-            </button>
+            </button>: <></>}
           </div>
         </div>
       </div>
