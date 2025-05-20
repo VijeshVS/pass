@@ -5,6 +5,7 @@ import { Pass } from '@/app/types';
 import { useRouter } from 'next/navigation';
 
 interface EventPassesProps {
+  event_id:string;
   passes: Pass[];
   totalParticipants: number;
   registrationOpen: boolean;
@@ -14,6 +15,7 @@ interface EventPassesProps {
 }
 
 const EventPasses: React.FC<EventPassesProps> = ({ 
+  event_id,
   passes, 
   totalParticipants, 
   registrationOpen,
@@ -67,7 +69,7 @@ const EventPasses: React.FC<EventPassesProps> = ({
       
       {/* Registration Button or Message */}
       {registrationOpen ? (
-        <button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 mb-6">
+        <button onClick={()=>router.push(`/admin/events/offline?event_id=${event_id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 mb-6">
           Register Now
         </button>
       ) : (

@@ -81,3 +81,71 @@ export async function changeStatus(
     };
   }
 }
+
+function generateRandomString(length = 12) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
+export async function offlineRegister({
+  name,
+  email,
+  phone,
+  amount,
+  classId,
+  noOfParticipants = 1,
+  participantsData = [],
+  token
+}: {
+  name: string;
+  email: string;
+  phone: string;
+  amount: number;
+  classId: string;
+  noOfParticipants?: number;
+  participantsData?: { name: string }[];
+  token: string;
+}) {
+
+  await connectDB();
+  const check = await checkIfAuthenticated(token);
+
+  if (!check) {
+    return {
+      success: false,
+    };
+  }
+
+  const timestamp = Date.now();
+  const randomSuffix = Math.floor(Math.random() * 1000);
+  const _id = `8THMILE_${timestamp}_${randomSuffix}`;
+  const orderId = `cash_8THMILE_${timestamp}_${randomSuffix}`;
+  const signature = generateRandomString(16); // 16-char random string
+
+  const registration = new Registration({
+    _id,
+    orderId,
+    signature,
+    name,
+    email,
+    phone,
+    amount,
+    type: 'event',
+    classId,
+    noOfParticipants,
+    participantsData,
+  });
+
+  try {
+    await registration.save();
+    return { success: true };
+  } catch (err: any) {
+    return { success: false };
+  }
+}

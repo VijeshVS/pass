@@ -147,6 +147,7 @@ const EventDetailsPage: React.FC = () => {
             
             {passes && (
               <EventPasses 
+                event_id={event._id}
                 passes={passes.passes} 
                 totalParticipants={passes.totalParticipants} 
                 registrationOpen={event.registrationOpen}
