@@ -10,12 +10,11 @@ const Page = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("token") || "";
-    const confirmDelete = confirm(
-      "Are you sure you want to delete this event?"
-    );
+    const confirmDelete = confirm("Are you sure you want to delete this event?");
     if (!confirmDelete) return;
 
     toast.promise(
@@ -57,6 +56,10 @@ const Page = () => {
     fetchEvents();
   }, []);
 
+  const filteredEvents = events.filter((event) =>
+    event.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) return <Loading />;
 
   if (error) {
@@ -69,8 +72,15 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-black text-[#f9dd9c] px-6 py-10">
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl ml-2 font-extrabold tracking-wide">Events</h1>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 gap-4">
+        <h1 className="text-4xl ml-1 font-extrabold tracking-wide">Events</h1>
+        <input
+          type="text"
+          placeholder="Search events..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="bg-gray-900 w-[300px] md:w-[400px] text-[#f9dd9c] placeholder:text-[#f9dd9c]/50 px-4 py-2 rounded-full border border-[#f9dd9c]/30 focus:outline-none focus:ring-2 focus:ring-[#f9dd9c]"
+        />
         <Link href="/admin/events/create">
           <button className="bg-[#f9dd9c] text-black font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-yellow-300 transition-all duration-300">
             + Create Event
@@ -78,16 +88,15 @@ const Page = () => {
         </Link>
       </div>
 
-      {events.length === 0 ? (
-        <div className="text-lg text-yellow-200">No events found.</div>
+      {filteredEvents.length === 0 ? (
+        <div className="text-lg text-yellow-200">No matching events found.</div>
       ) : (
         <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {events.map((event) => (
+          {filteredEvents.map((event) => (
             <div
               key={event._id}
               className="relative bg-gradient-to-br from-black via-gray-900 to-black p-5 rounded-2xl border border-[#f9dd9c]/30 shadow-lg hover:shadow-yellow-400/20 transition-shadow duration-300 group"
             >
-              {/* Glowing background with pointer-events disabled */}
               <div className="absolute inset-0 rounded-2xl border-2 border-[#f9dd9c] opacity-10 blur-xl group-hover:opacity-20 transition pointer-events-none" />
 
               <h2 className="text-xl font-bold mb-2 text-[#f9dd9c] transition-transform duration-300">
@@ -98,18 +107,10 @@ const Page = () => {
               </p>
 
               <div className="text-sm space-y-1 mb-3">
-                <p>
-                  <strong>Category:</strong> {event.category || "N/A"}
-                </p>
-                <p>
-                  <strong>Date:</strong> {event.date || "N/A"}
-                </p>
-                <p>
-                  <strong>Time:</strong> {event.time || "N/A"}
-                </p>
-                <p>
-                  <strong>Venue:</strong> {event.venue || "N/A"}
-                </p>
+                <p><strong>Category:</strong> {event.category || "N/A"}</p>
+                <p><strong>Date:</strong> {event.date || "N/A"}</p>
+                <p><strong>Time:</strong> {event.time || "N/A"}</p>
+                <p><strong>Venue:</strong> {event.venue || "N/A"}</p>
               </div>
 
               {event.contact?.length > 0 && (
