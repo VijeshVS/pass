@@ -1,15 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '../actions/auth';
+import { checkIfAuthenticated, login } from '../actions/auth';
 import { toast } from 'sonner';
+import Loading from '../components/Loading';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const [loading,setLoading] = useState(true)
+
+  useEffect(() => {
+      checkIfAuthenticated(localStorage.getItem('token') || '').then((check) => {
+        if (!check) {
+          setLoading(false);
+        } else {
+          router.push('/')
+          toast.error('User already logged in !!');
+        }
+      });
+  }, []);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,7 +49,7 @@ function LoginPage() {
         toast.success('Login successful!', {
           id: 'login-success',
         });
-        router.push('/scan');
+        router.push('/');
       } else if (response.status === 401) {
         setError('Not authenticated. Please check your credentials.');
         toast.error('Invalid credentials, please try again.', {
@@ -56,6 +69,8 @@ function LoginPage() {
       });
     }
   };
+
+  if(loading) return <Loading/>
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-black px-4">

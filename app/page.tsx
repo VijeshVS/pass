@@ -1,9 +1,27 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { checkIfAuthenticated } from './actions/auth';
+import { toast } from 'sonner';
+import Loading from './components/Loading';
 
 export default function Home() {
   const router = useRouter();
+  const [loading,setLoading] = useState(true)
+
+  useEffect(() => {
+    checkIfAuthenticated(localStorage.getItem('token') || '').then((check) => {
+      if (check) {
+        setLoading(false);
+      } else {
+        router.push('/login');
+        toast.error('Please login to continue');
+      }
+    });
+  }, []);
+
+  if(loading) return <Loading/>
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4">
@@ -16,12 +34,6 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col gap-4">
-          <button
-            onClick={() => router.push('/login')}
-            className="px-6 py-3 border border-[#f9dd9c] text-[#f9dd9c] font-semibold rounded-md hover:bg-[#f9dd9c] hover:text-black transition duration-200"
-          >
-            🔐 Login
-          </button>
           <button
             onClick={() => router.push('/scan')}
             className="px-6 py-3 border border-[#f9dd9c] text-[#f9dd9c] font-semibold rounded-md hover:bg-[#f9dd9c] hover:text-black transition duration-200"
