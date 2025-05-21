@@ -196,10 +196,9 @@ export async function sendResendMailForPass(token:string,type: string, registrat
   const role = await getRole(token);
 
   if (!checkIfAllowed("resend_mail", role)) {
-    return {
-      status: 401,
-      error: "Unauthorized",
-    };
+    return new Promise((resolve,reject)=>{
+      reject("Unauthorized !!")
+    })
   }
 
   await resendMailto(type, registration, paymentId);
