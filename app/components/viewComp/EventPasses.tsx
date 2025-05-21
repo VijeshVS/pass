@@ -12,6 +12,10 @@ interface EventPassesProps {
   registrationDeadline?: string;
   registrationFee?: number;
   feetype?: string;
+  teamsRegistered?:number,
+  participantsEntered?:number,
+  partiallyTeamsEntered?: number,
+  teamsEnteredFully?:number,
 }
 
 const EventPasses: React.FC<EventPassesProps> = ({ 
@@ -21,7 +25,11 @@ const EventPasses: React.FC<EventPassesProps> = ({
   registrationOpen,
   registrationDeadline,
   registrationFee,
-  feetype
+  feetype,
+  teamsRegistered,
+  participantsEntered,
+  partiallyTeamsEntered,
+  teamsEnteredFully
 }) => {
   
   const router = useRouter();
@@ -44,9 +52,35 @@ const EventPasses: React.FC<EventPassesProps> = ({
       
       {/* Registration Status */}
       <div className="mb-6">
-        <div className="flex items-center text-sm text-gray-600 mb-4">
-          <Users className="w-4 h-4 mr-2 text-purple-600" />
-          <span>{totalParticipants} participant{totalParticipants !== 1 ? 's' : ''} registered</span>
+        <div className="flex flex-col gap-2 mb-4">
+          <div className="flex items-center text-sm text-gray-600">
+            <Users className="w-4 h-4 mr-2 text-purple-600" />
+            <span>{totalParticipants} participant{totalParticipants !== 1 ? 's' : ''} registered</span>
+          </div>
+          {typeof teamsRegistered === 'number' && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Users className="w-4 h-4 mr-2 text-blue-600" />
+              <span>{teamsRegistered} team{teamsRegistered !== 1 ? 's' : ''} registered</span>
+            </div>
+          )}
+          {typeof participantsEntered === 'number' && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Users className="w-4 h-4 mr-2 text-green-600" />
+              <span>{participantsEntered} participant{participantsEntered !== 1 ? 's' : ''} entered</span>
+            </div>
+          )}
+          {typeof partiallyTeamsEntered === 'number' && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Users className="w-4 h-4 mr-2 text-amber-600" />
+              <span>{partiallyTeamsEntered} team{partiallyTeamsEntered !== 1 ? 's' : ''} partially entered</span>
+            </div>
+          )}
+          {typeof teamsEnteredFully === 'number' && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Users className="w-4 h-4 mr-2 text-purple-600" />
+              <span>{teamsEnteredFully} team{teamsEnteredFully !== 1 ? 's' : ''} fully entered</span>
+            </div>
+          )}
         </div>
         
         {registrationDeadline && (

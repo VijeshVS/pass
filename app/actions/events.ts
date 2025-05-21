@@ -268,7 +268,6 @@ export async function getEventPasses(token: string, event_id: string) {
 
     const passes = rawPasses.map((pass) => {
       const { _id, createdAt, updatedAt, ...rest } = pass;
-
       return {
         ...rest,
         // @ts-ignore
@@ -279,14 +278,41 @@ export async function getEventPasses(token: string, event_id: string) {
     });
 
     let totalParticipants = 0;
+    let participantsEntered = 0;
+    let teamEnteredFully = 0;
+    let partiallyEntered = 0;
+
     passes.forEach((pass) => {
       // @ts-ignore
-      totalParticipants += pass.noOfParticipants || 0;
+      const participants = pass.participantsData || [];
+      // @ts-ignore
+      const arrivedStatuses = participants.map(p => p.arrived);
+
+      // @ts-ignore
+      totalParticipants += pass.noOfParticipants || participants.length;
+
+      // Count of participants who have arrived
+      participantsEntered += arrivedStatuses.filter(Boolean).length;
+
+      if (participants.length > 0 && arrivedStatuses.some(Boolean) && !arrivedStatuses.every(Boolean)) {
+        partiallyEntered++;
+      }
+
+      // All participants arrived
+      if (participants.length > 0 && arrivedStatuses.every(Boolean)) {
+        teamEnteredFully++;
+      }
+
     });
+
 
     return {
       success: true,
       totalParticipants,
+      teamsRegistered: passes.length,
+      participantsEntered,
+      teamEnteredFully,
+      partiallyEntered,
       passes,
     };
   } catch (error) {
@@ -297,6 +323,7 @@ export async function getEventPasses(token: string, event_id: string) {
     };
   }
 }
+
 
 export async function deleteEventById(eventId: string, token: string) {
   await connectDB();

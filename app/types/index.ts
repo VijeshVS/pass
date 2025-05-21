@@ -53,4 +53,8 @@ export interface EventPassesResponse {
   success: boolean;
   totalParticipants: number;
   passes: Pass[];
+  teamsRegistered?:number;
+  participantsEntered?:number;
+  partiallyEntered?: number;
+  teamEnteredFully?:number;
 }

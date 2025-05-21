@@ -154,6 +154,10 @@ const EventDetailsPage: React.FC = () => {
                 registrationDeadline={event.registrationDeadline}
                 registrationFee={event.registrationFee}
                 feetype={event.feetype}
+                teamsRegistered={passes.teamsRegistered}
+                partiallyTeamsEntered={passes.partiallyEntered}
+                teamsEnteredFully={passes.teamEnteredFully}
+                participantsEntered={passes.participantsEntered}
               />
             )}
 
