@@ -1,17 +1,20 @@
 "use server";
 
-import {  Registration } from "../db/models";
+import { Registration } from "../db/models";
 import { connectDB } from "../db/db";
-import { checkIfAuthenticated } from "./auth";
+import { getRole } from "./auth";
 import { mailto } from "./email";
+import { checkIfAllowed } from "./role";
 
 export async function getPassDetails(pass_id: string, token: string) {
   await connectDB();
-  const check = await checkIfAuthenticated(token);
 
-  if (!check) {
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("qr", role)) {
     return {
       status: 401,
+      error: "Unauthorized",
     };
   }
 
@@ -46,11 +49,13 @@ export async function changeStatus(
   participant_index: number
 ) {
   await connectDB();
-  const check = await checkIfAuthenticated(token);
 
-  if (!check) {
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("qr", role)) {
     return {
       status: 401,
+      error: "Unauthorized",
     };
   }
 
@@ -84,15 +89,15 @@ export async function changeStatus(
 }
 
 function generateRandomString(length = 12) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
 }
-
 
 export async function offlineRegister({
   name,
@@ -102,7 +107,7 @@ export async function offlineRegister({
   classId,
   noOfParticipants = 1,
   participantsData = [],
-  token
+  token,
 }: {
   name: string;
   email: string;
@@ -113,13 +118,13 @@ export async function offlineRegister({
   participantsData?: { name: string }[];
   token: string;
 }) {
-
   await connectDB();
-  const check = await checkIfAuthenticated(token);
+  const role = await getRole(token);
 
-  if (!check) {
+  if (!checkIfAllowed("create", role)) {
     return {
-      success: false,
+      status: 401,
+      error: "Unauthorized",
     };
   }
 
@@ -137,7 +142,7 @@ export async function offlineRegister({
     email,
     phone,
     amount,
-    type: 'event',
+    type: "event",
     classId,
     noOfParticipants,
     participantsData,
@@ -145,7 +150,7 @@ export async function offlineRegister({
 
   try {
     const reg = await registration.save();
-    await mailto("event",reg,reg._id)
+    await mailto("event", reg, reg._id);
     return { success: true };
   } catch (err: any) {
     return { success: false };

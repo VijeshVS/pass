@@ -2,7 +2,7 @@
 
 import { User } from "../db/models";
 import { connectDB } from "../db/db";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const secretKey = process.env.JWT_SECRET_KEY || "hello"
 
@@ -13,6 +13,22 @@ export async function checkIfAuthenticated(token: string) {
   } catch {
     return false;
   }
+}
+
+export async function getRole(token: string){
+
+  if(!checkIfAuthenticated(token)) return "none";
+
+  const data = jwt.decode(token) as JwtPayload;
+  const user = data.username;
+
+  const userFromDB = await User.findOne({
+    username: user,
+  });
+
+  if(!userFromDB) return "none"
+
+  return userFromDB.role;
 }
 
 export async function login(username: string, password: string) {

@@ -1,51 +1,18 @@
 "use server";
 import { connectDB } from "../db/db";
-import { EventModel, Registration, User } from "../db/models";
-import { checkIfAuthenticated } from "./auth";
-import jwt, { JwtPayload } from "jsonwebtoken";
-
-export async function checkIfAdmin(token: string) {
-  const data = jwt.decode(token) as JwtPayload;
-  const user = data.username;
-
-  const ur = await User.findOne({
-    username: user,
-  });
-
-  if(!ur) return false;
-  
-  if(ur.role == 'admin' || ur.role == 'super-admin'){
-    return true;
-  }
-
-  return false;
-}
-
-export async function checkIfSuperAdmin(token: string) {
-  const data = jwt.decode(token) as JwtPayload;
-  const user = data.username;
-
-  const ur = await User.findOne({
-    username: user,
-  });
-
-  if(!ur) return false;
-  
-  if(ur.role == 'super-admin'){
-    return true;
-  }
-
-  return false;
-}
+import { EventModel, Registration } from "../db/models";
+import { getRole } from "./auth";
+import { checkIfAllowed } from "./role";
 
 export async function getAllEvents(token: string) {
   await connectDB();
-  const check = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token);
 
-  if (!check || !adminCheck) {
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("view", role)) {
     return {
       status: 401,
+      error: "Unauthorized",
     };
   }
 
@@ -69,10 +36,10 @@ export async function getAllEvents(token: string) {
 
 export async function getEventById(eventId: string, token: string) {
   await connectDB();
-  const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token);
 
-  if (!isAuthenticated || !adminCheck) {
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("view", role)) {
     return {
       status: 401,
       error: "Unauthorized",
@@ -119,14 +86,14 @@ export async function getEventById(eventId: string, token: string) {
 export async function createOneEvent(formData: any, token: string) {
   await connectDB();
 
-  const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token);
+  const role = await getRole(token);
 
-  if (!isAuthenticated || !adminCheck) {
-    return { status: 401, error: "Unauthorized" };
+  if (!checkIfAllowed("create", role)) {
+    return {
+      status: 401,
+      error: "Unauthorized",
+    };
   }
-
-  console.log(formData)
 
   try {
     const {
@@ -173,7 +140,7 @@ export async function createOneEvent(formData: any, token: string) {
 
     return { status: 200 };
   } catch (error: any) {
-    console.log(error)
+    console.log(error);
     console.error("Error creating event:", error);
     return {
       status: 500,
@@ -185,11 +152,13 @@ export async function createOneEvent(formData: any, token: string) {
 export async function updateOneEvent(formData: any, token: string) {
   await connectDB();
 
-  const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token);
+  const role = await getRole(token);
 
-  if (!isAuthenticated || !adminCheck) {
-    return { status: 401, error: "Unauthorized" };
+  if (!checkIfAllowed("edit", role)) {
+    return {
+      status: 401,
+      error: "Unauthorized",
+    };
   }
 
   try {
@@ -254,11 +223,13 @@ export async function updateOneEvent(formData: any, token: string) {
 export async function getEventPasses(token: string, event_id: string) {
   await connectDB();
 
-  const isAuthenticated = await checkIfAuthenticated(token);
-  const adminCheck = await checkIfAdmin(token);
+  const role = await getRole(token);
 
-  if (!isAuthenticated || !adminCheck) {
-    return { status: 401, error: "Unauthorized" };
+  if (!checkIfAllowed("view", role)) {
+    return {
+      status: 401,
+      error: "Unauthorized",
+    };
   }
 
   try {
@@ -286,7 +257,7 @@ export async function getEventPasses(token: string, event_id: string) {
       // @ts-ignore
       const participants = pass.participantsData || [];
       // @ts-ignore
-      const arrivedStatuses = participants.map(p => p.arrived);
+      const arrivedStatuses = participants.map((p) => p.arrived);
 
       // @ts-ignore
       totalParticipants += pass.noOfParticipants || participants.length;
@@ -294,7 +265,11 @@ export async function getEventPasses(token: string, event_id: string) {
       // Count of participants who have arrived
       participantsEntered += arrivedStatuses.filter(Boolean).length;
 
-      if (participants.length > 0 && arrivedStatuses.some(Boolean) && !arrivedStatuses.every(Boolean)) {
+      if (
+        participants.length > 0 &&
+        arrivedStatuses.some(Boolean) &&
+        !arrivedStatuses.every(Boolean)
+      ) {
         partiallyEntered++;
       }
 
@@ -302,9 +277,7 @@ export async function getEventPasses(token: string, event_id: string) {
       if (participants.length > 0 && arrivedStatuses.every(Boolean)) {
         teamEnteredFully++;
       }
-
     });
-
 
     return {
       success: true,
@@ -324,13 +297,12 @@ export async function getEventPasses(token: string, event_id: string) {
   }
 }
 
-
 export async function deleteEventById(eventId: string, token: string) {
   await connectDB();
-  const isAuthenticated = await checkIfAuthenticated(token);
-  const isSuperAdmin = await checkIfSuperAdmin(token);
 
-  if (!isAuthenticated || !isSuperAdmin) {
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("delete", role)) {
     return {
       status: 401,
       error: "Unauthorized",
