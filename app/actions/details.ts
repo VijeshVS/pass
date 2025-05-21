@@ -3,6 +3,7 @@
 import {  Registration } from "../db/models";
 import { connectDB } from "../db/db";
 import { checkIfAuthenticated } from "./auth";
+import { mailto } from "./email";
 
 export async function getPassDetails(pass_id: string, token: string) {
   await connectDB();
@@ -143,7 +144,8 @@ export async function offlineRegister({
   });
 
   try {
-    await registration.save();
+    const reg = await registration.save();
+    await mailto("event",reg,reg._id)
     return { success: true };
   } catch (err: any) {
     return { success: false };

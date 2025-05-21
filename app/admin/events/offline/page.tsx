@@ -135,7 +135,6 @@ export default function EventRegistrationPage() {
     e.preventDefault();
     if (!event || !registrationStatus) return;
 
-    // Validate team members - all fields must be filled
     const emptyMembers = teamMembers.filter((member) => !member.name.trim());
 
     if (emptyMembers.length > 0) {
@@ -143,40 +142,36 @@ export default function EventRegistrationPage() {
       return;
     }
 
-    try {
-      const formattedTeamMembers = teamMembers.map((member) => {
-        return {
-          name: member.name.trim(),
-        };
-      });
-      const totalFee = calculateTotalFee();
+    const formattedTeamMembers = teamMembers.map((member) => ({
+      name: member.name.trim(),
+    }));
+    const totalFee = calculateTotalFee();
 
-      const response = await offlineRegister({
-        name: name,
-        email: email,
-        phone: phone,
-        amount: totalFee,
-        classId: event._id,
-        noOfParticipants: teamsize,
-        participantsData: formattedTeamMembers,
-        token: localStorage.getItem("token") || "",
-      });
+    const registrationPromise = offlineRegister({
+      name,
+      email,
+      phone,
+      amount: totalFee,
+      classId: event._id,
+      noOfParticipants: teamsize,
+      participantsData: formattedTeamMembers,
+      token: localStorage.getItem("token") || "",
+    });
 
-      if (!response.success) {
-        throw new Error("Failed to create registration");
-      }
-
-      toast.success("Registration created successfully !!");
-
-      setTimeout(() => {
-        router.refresh();
-      }, 3000);
-
-    } catch (err: any) {
-      setError(err.message || "Failed to process registration");
-      console.error(err);
-      setIsProcessing(false);
-    }
+    toast.promise(registrationPromise, {
+      loading: "Processing registration...",
+      success: () => {
+        setTimeout(() => {
+          router.refresh();
+        }, 3000);
+        return "Registration created successfully !!";
+      },
+      error: (err) => {
+        setError(err.message || "Failed to process registration");
+        console.error(err);
+        return "Failed to create registration";
+      },
+    });
   };
 
   if (loading) return <Loading />;
