@@ -1,10 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { checkIfAuthenticated } from '../actions/auth';
-import { toast } from 'sonner';
-import Loading from '../components/Loading';
 
 export default function AdminRedirectPage() {
   const router = useRouter();
@@ -22,13 +18,23 @@ export default function AdminRedirectPage() {
           Manage events, users, and more with full control.
         </p>
 
-        <button
-          onClick={() => router.push('/admin/events')}
-          className="relative inline-block px-8 py-4 font-semibold text-black bg-[#f9dd9c] rounded-full shadow-md hover:bg-yellow-300 transition duration-300 group"
-        >
-          <span className="absolute inset-0 rounded-full bg-[#f9dd9c] blur-xl opacity-20 group-hover:opacity-40 transition duration-300"></span>
-          <span className="relative z-10">Go to Events</span>
-        </button>
+        <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+          <button
+            onClick={() => router.push('/admin/events')}
+            className="relative inline-block px-8 py-4 font-semibold text-black bg-[#f9dd9c] rounded-full shadow-md hover:bg-yellow-300 transition duration-300 group"
+          >
+            <span className="absolute inset-0 rounded-full bg-[#f9dd9c] blur-xl opacity-20 group-hover:opacity-40 transition duration-300"></span>
+            <span className="relative z-10">Go to Events</span>
+          </button>
+
+          <button
+            onClick={() => router.push('/admin/passes')}
+            className="relative inline-block px-8 py-4 font-semibold text-black bg-[#f9dd9c] rounded-full shadow-md hover:bg-yellow-300 transition duration-300 group"
+          >
+            <span className="absolute inset-0 rounded-full bg-[#f9dd9c] blur-xl opacity-20 group-hover:opacity-40 transition duration-300"></span>
+            <span className="relative z-10">Go to Passes</span>
+          </button>
+        </div>
       </div>
     </div>
   );

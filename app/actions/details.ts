@@ -6,6 +6,40 @@ import { getRole } from "./auth";
 import { mailto } from "./email";
 import { checkIfAllowed } from "./role";
 
+export async function getAllPasses(token: string) {
+  await connectDB();
+
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("view", role)) {
+    return {
+      status: 401,
+      error: "Unauthorized",
+    };
+  }
+
+  const passDocs = await Registration.find({});
+
+  const passes = passDocs.map((doc) => {
+    const pass = doc.toObject();
+
+    if (Array.isArray(pass.participantsData)) {
+      pass.participantsData = pass.participantsData.map((participant: any) => ({
+        ...participant,
+        _id: participant._id?.toString?.() || undefined,
+      }));
+    }
+
+    pass._id = pass._id?.toString?.();
+    return pass;
+  });
+
+  return {
+    status: 200,
+    passes,
+  };
+}
+
 export async function getPassDetails(pass_id: string, token: string) {
   await connectDB();
 

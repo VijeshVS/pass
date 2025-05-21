@@ -1,6 +1,12 @@
 "use server";
 import mongoose from "mongoose";
 
+const userSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  role: String,
+});
+
 const participantSchema = new mongoose.Schema(
   {
     name: String,
@@ -9,11 +15,6 @@ const participantSchema = new mongoose.Schema(
   { timestamps: false }
 );
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  role: String,
-});
 
 const registrationSchema = new mongoose.Schema(
   {
