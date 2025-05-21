@@ -121,7 +121,7 @@ export async function offlineRegister({
   await connectDB();
   const role = await getRole(token);
 
-  if (!checkIfAllowed("create", role)) {
+  if (!checkIfAllowed("offline_reg", role)) {
     return {
       status: 401,
       error: "Unauthorized",
