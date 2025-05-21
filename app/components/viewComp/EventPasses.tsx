@@ -70,7 +70,7 @@ const EventPasses: React.FC<EventPassesProps> = ({
       {/* Registration Button or Message */}
       {registrationOpen ? (
         <button onClick={()=>router.push(`/admin/events/offline?event_id=${event_id}`)} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 mb-6">
-          Register Now
+          Register Offline
         </button>
       ) : (
         <div className="flex items-center bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-md mb-6">
