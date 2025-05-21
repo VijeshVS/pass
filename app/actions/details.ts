@@ -3,7 +3,7 @@
 import { Registration } from "../db/models";
 import { connectDB } from "../db/db";
 import { getRole } from "./auth";
-import { mailto } from "./email";
+import { mailto, resendMailto } from "./email";
 import { checkIfAllowed } from "./role";
 
 export async function getAllPasses(token: string) {
@@ -189,4 +189,18 @@ export async function offlineRegister({
   } catch (err: any) {
     return { success: false };
   }
+}
+
+export async function sendResendMailForPass(token:string,type: string, registration: any, paymentId: string){
+
+  const role = await getRole(token);
+
+  if (!checkIfAllowed("resend_mail", role)) {
+    return {
+      status: 401,
+      error: "Unauthorized",
+    };
+  }
+
+  await resendMailto(type, registration, paymentId);
 }

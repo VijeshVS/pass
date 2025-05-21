@@ -4,7 +4,7 @@
 // moderator : only scan (no admin) 
 
 const hierarchy: Record<string, string[]> = {
-    "super-admin": ['view','create','edit','delete','qr','offline_reg'],
+    "super-admin": ['view','create','edit','delete','qr','offline_reg','resend_mail'],
     "viewer-admin": ['view','qr'],
     "moderator": ['qr','offline_reg'],
     "none": []
